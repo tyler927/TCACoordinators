@@ -3,7 +3,7 @@ import FlowStacks
 import Foundation
 import SwiftUI
 
-extension Reducer {
+extension AnyReducer {
   
   /// Lifts a screen reducer to one that operates on an `Array` of `Route<Screen>`s. The resulting reducer will
   /// update the routes whenever the user navigates back, e.g. by swiping.
@@ -19,7 +19,7 @@ extension Reducer {
     environment toLocalEnvironment: @escaping (CoordinatorEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
-  ) -> Reducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
+  ) -> AnyReducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
   where
   CoordinatorAction.ScreenAction == Action,
   CoordinatorAction.Screen == CoordinatorState.Screen,
@@ -52,7 +52,7 @@ extension Reducer {
     environment toLocalEnvironment: @escaping (CoordinatorEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
-  ) -> Reducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
+  ) -> AnyReducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
   {
     self
       .onRoutes()

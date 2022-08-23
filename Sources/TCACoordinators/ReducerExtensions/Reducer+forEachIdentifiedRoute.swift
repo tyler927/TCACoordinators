@@ -3,7 +3,7 @@ import FlowStacks
 import Foundation
 import SwiftUI
   
-extension Reducer where State: Identifiable {
+extension AnyReducer where State: Identifiable {
   
   /// Lifts a screen reducer to one that operates on an `IdentifiedArray` of `Route<Screen>`s. The resulting reducer will
   /// update the routes whenever the user navigates back, e.g. by swiping.
@@ -19,7 +19,7 @@ extension Reducer where State: Identifiable {
     environment toLocalEnvironment: @escaping (CoordinatorEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
-  ) -> Reducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
+  ) -> AnyReducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
   where
   CoordinatorAction.ScreenAction == Action,
   CoordinatorAction.Screen == CoordinatorState.Screen,
@@ -52,7 +52,7 @@ extension Reducer where State: Identifiable {
     environment toLocalEnvironment: @escaping (CoordinatorEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
-  ) -> Reducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
+  ) -> AnyReducer<CoordinatorState, CoordinatorAction, CoordinatorEnvironment>
   {
     self
       .onRoutes()
@@ -70,12 +70,12 @@ extension Reducer where State: Identifiable {
   }
 }
 
-extension Reducer {
+extension AnyReducer {
   
   /// Lifts a Screen reducer to one that acts on Route<Screen>.
   /// - Returns: The new reducer.
-  func onRoutes() -> Reducer<Route<State>, Action, Environment> {
-    return Reducer<Route<State>, Action, Environment> { state, action, environment in
+  func onRoutes() -> AnyReducer<Route<State>, Action, Environment> {
+    return AnyReducer<Route<State>, Action, Environment> { state, action, environment in
       self.run(&state.screen, action, environment)
     }
   }
@@ -85,8 +85,8 @@ extension Reducer {
   func updateScreensOnInteraction<Routes>(
     updateRoutes: CasePath<Action, Routes>,
     state toLocalState: WritableKeyPath<State, Routes>
-  ) -> Reducer {
-    return self.combined(with: Reducer { state, action, environment in
+  ) -> AnyReducer {
+    return self.combined(with: AnyReducer { state, action, environment in
       if let routes = updateRoutes.extract(from: action) {
         state[keyPath: toLocalState] = routes
       }

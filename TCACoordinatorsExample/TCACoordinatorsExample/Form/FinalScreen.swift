@@ -141,10 +141,10 @@ struct FinalScreenEnvironment {
   let submit: (APIModel) -> Effect<Bool, Never>
 }
 
-typealias FinalScreenReducer = Reducer<FinalScreenState, FinalScreenAction, FinalScreenEnvironment>
+typealias FinalScreenReducer = AnyReducer<FinalScreenState, FinalScreenAction, FinalScreenEnvironment>
 
 extension FinalScreenReducer {
-  static let finalScreen = Reducer { state, action, environment in
+  static let finalScreen = AnyReducer { state, action, environment in
     switch action {
     case .submit:
       guard let job = state.job else { return .none }

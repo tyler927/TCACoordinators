@@ -3,19 +3,19 @@ import FlowStacks
 import Foundation
 import SwiftUI
 
-extension Reducer {
+extension AnyReducer {
   
   /// Transforms a reducer into one that tags route actions' effects for cancellation with the `coordinatorId`
   /// and route index.
   /// - Parameter coordinatorId: A stable identifier for the coordinator. It should match the one used in a
   ///     subsequent call to `cancelTaggedScreenEffectsOnDismiss`.
   /// - Parameter routeAction: A case path to an action that dispatches route actions to the correct screen.
-  /// - Returns: A new `Reducer`.
+  /// - Returns: A new `AnyReducer`.
   func tagRouteEffectsForCancellation<RouteAction, CoordinatorID: Hashable, RouteID: Hashable>(
     coordinatorId: CoordinatorID,
     routeAction: CasePath<Action, (RouteID, RouteAction)>
-  ) -> Reducer {
-    return Reducer { state, action, environment in
+  ) -> AnyReducer {
+    return AnyReducer { state, action, environment in
       let effect = self.run(&state, action, environment)
 
       if let (routeId, _) = routeAction.extract(from: action) {
@@ -31,14 +31,14 @@ extension Reducer {
   /// longer shown, identifying routes by their index.
   /// - Parameter coordinatorId: A stable identifier for the coordinator.
   /// - Parameter routes: A closure that accesses the coordinator's routes collection.
-  /// - Returns: A new `Reducer`.
+  /// - Returns: A new `AnyReducer`.
   func cancelTaggedRouteEffectsOnDismiss<CoordinatorID: Hashable, C: Collection, RouteID: Hashable>(
     coordinatorId: CoordinatorID,
     routes: @escaping (State) -> C,
     getIdentifier: @escaping (C.Element, C.Index) -> RouteID
-  ) -> Reducer
+  ) -> AnyReducer
   {
-    return Reducer { state, action, environment in
+    return AnyReducer { state, action, environment in
       let preRoutes = routes(state)
       let effect = self.run(&state, action, environment)
       let postRoutes = routes(state)

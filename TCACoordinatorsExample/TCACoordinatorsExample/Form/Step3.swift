@@ -88,10 +88,10 @@ struct Step3Environment {
   let getOccupations: () -> Effect<[String], Never>
 }
 
-typealias Step3Reducer = Reducer<Step3State, Step3Action, Step3Environment>
+typealias Step3Reducer = AnyReducer<Step3State, Step3Action, Step3Environment>
 
 extension Step3Reducer {
-  static let step3 = Reducer { state, action, environment in
+  static let step3 = AnyReducer { state, action, environment in
     switch action {
     case .getOccupations:
       return environment
